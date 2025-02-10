@@ -10,9 +10,19 @@ import time
 
 
 def buy_lotto645(authCtrl: auth.AuthController, cnt: int, mode: str):
+
+    # 직접 선택한 로또 번호 (최대 5개)
+    manual_numbers = [
+        [2, 8, 12, 29, 38, 39],  # 첫 번째 슬롯 (완전 수동)
+        [2, 8, 12, 29, 38, 39],  # 첫 번째 슬롯 (완전 수동)
+        [17, 19],                # 두 번째 슬롯 (반자동: 나머지 자동)
+        [40, 43, 44],             # 네 번째 슬롯 (반자동)
+        None                      # 다섯 번째 슬롯 (완전 자동)
+    ]
+    
     lotto = lotto645.Lotto645()
-    _mode = lotto645.Lotto645Mode[mode.upper()]
-    response = lotto.buy_lotto645(authCtrl, cnt, _mode)
+    _mode = "MANUAL"
+    response = lotto.buy_lotto645(authCtrl, cnt, _mode, manual_numbers)
     response['balance'] = lotto.get_balance(auth_ctrl=authCtrl)
     return response
 
