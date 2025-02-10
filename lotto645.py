@@ -38,12 +38,7 @@ class Lotto645:
     def __init__(self):
         self.http_client = HttpClientSingleton.get_instance()
 
-    def buy_lotto645(
-        self, 
-        auth_ctrl: auth.AuthController, 
-        cnt: int, 
-        mode: Lotto645Mode
-    ) -> dict:
+    def buy_lotto645(self, auth_ctrl: auth.AuthController, cnt: int, mode: Lotto645Mode, manual_numbers=None) -> dict:
         assert type(auth_ctrl) == auth.AuthController
         assert type(cnt) == int and 1 <= cnt <= 5
         assert type(mode) == Lotto645Mode
@@ -51,14 +46,12 @@ class Lotto645:
         headers = self._generate_req_headers(auth_ctrl)
         requirements = self._getRequirements(headers)
 
-        data = (
-            self._generate_body_for_auto_mode(cnt, requirements)
-            if mode == Lotto645Mode.AUTO
-            else self._generate_body_for_manual(cnt)
-        )
+        if mode == Lotto645Mode.AUTO:
+            data = self._generate_body_for_auto_mode(cnt, requirements)
+        else:
+            data = self._generate_body_for_manual(cnt, requirements, manual_numbers)
 
         body = self._try_buying(headers, data)
-
         self._show_result(body)
         return body
 
@@ -68,35 +61,45 @@ class Lotto645:
         return auth_ctrl.add_auth_cred_to_headers(self._REQ_HEADERS)
 
     def _generate_body_for_auto_mode(self, cnt: int, requirements: list) -> dict:
-        assert type(cnt) == int and 1 <= cnt <= 5
-
-        SLOTS = [
-            "A",
-            "B",
-            "C",
-            "D",
-            "E",
-        ]  
-
+        SLOTS = ["A", "B", "C", "D", "E"]
         return {
             "round": self._get_round(),
-            "direct": requirements[0],  # TODO: test if this can be comment
+            "direct": "auto",
             "nBuyAmount": str(1000 * cnt),
             "param": json.dumps(
-                [
-                    {"genType": "0", "arrGameChoiceNum": None, "alpabet": slot}
-                    for slot in SLOTS[:cnt]
-                ]
+                [{"genType": "0", "arrGameChoiceNum": None, "alpabet": slot} for slot in SLOTS[:cnt]]
             ),
-            'ROUND_DRAW_DATE' : requirements[1],
-            'WAMT_PAY_TLMT_END_DT' : requirements[2],
+            'ROUND_DRAW_DATE': requirements[1],
+            'WAMT_PAY_TLMT_END_DT': requirements[2],
             "gameCnt": cnt
         }
 
-    def _generate_body_for_manual(self, cnt: int) -> dict:
+    def _generate_body_for_manual(self, cnt: int, requirements: list, manual_numbers=None) -> dict:
         assert type(cnt) == int and 1 <= cnt <= 5
-
-        raise NotImplementedError()
+        SLOTS = ["A", "B", "C", "D", "E"]
+        
+        if not manual_numbers:
+            raise ValueError("수동 모드에서는 반드시 manual_numbers를 제공해야 합니다.")
+        
+        games = []
+        for i in range(cnt):
+            if i < len(manual_numbers):
+                numbers = manual_numbers[i]
+                gen_type = "1"
+            else:
+                numbers = None
+                gen_type = "0"
+            games.append({"genType": gen_type, "arrGameChoiceNum": numbers, "alpabet": SLOTS[i]})
+        
+        return {
+            "round": self._get_round(),
+            "direct": "manual",
+            "nBuyAmount": str(1000 * cnt),
+            "param": json.dumps(games),
+            'ROUND_DRAW_DATE': requirements[1],
+            'WAMT_PAY_TLMT_END_DT': requirements[2],
+            "gameCnt": cnt
+        }
 
     def _getRequirements(self, headers: dict) -> list: 
         org_headers = headers.copy()
