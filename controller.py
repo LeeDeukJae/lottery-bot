@@ -21,11 +21,11 @@ def check_winning_lotto645(authCtrl: auth.AuthController) -> dict:
     item = lotto.check_winning(authCtrl)
     return item
 
-def buy_win720(authCtrl: auth.AuthController, username: str):
-    pension = win720.Win720()
-    response = pension.buy_Win720(authCtrl, username)
-    response['balance'] = pension.get_balance(auth_ctrl=authCtrl)
-    return response
+# def buy_win720(authCtrl: auth.AuthController, username: str):
+#     pension = win720.Win720()
+#     response = pension.buy_Win720(authCtrl, username)
+#     response['balance'] = pension.get_balance(auth_ctrl=authCtrl)
+#     return response
 
 def check_winning_win720(authCtrl: auth.AuthController) -> dict:
     pension = win720.Win720()
@@ -84,8 +84,8 @@ def buy():
 
     time.sleep(10)
 
-    response = buy_win720(globalAuthCtrl, username) 
-    send_message(1, 1, response=response, webhook_url=discord_webhook_url)
+    # response = buy_win720(globalAuthCtrl, username) 
+    # send_message(1, 1, response=response, webhook_url=discord_webhook_url)
 
 def run():
     if len(sys.argv) < 2:
