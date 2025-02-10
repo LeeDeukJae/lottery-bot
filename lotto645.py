@@ -74,32 +74,41 @@ class Lotto645:
             "gameCnt": cnt
         }
 
-    def _generate_body_for_manual(self, cnt: int, requirements: list, manual_numbers=None) -> dict:
-        assert type(cnt) == int and 1 <= cnt <= 5
-        SLOTS = ["A", "B", "C", "D", "E"]
+    def _generate_body_for_manual(self, cnt: int, requirements: list, manual_numbers: list) -> dict:
+    assert type(cnt) == int and 1 <= cnt <= 5
+
+    import random
+    SLOTS = ["A", "B", "C", "D", "E"]  # 최대 5개 슬롯
+    all_numbers = list(range(1, 46))  # 1~45까지 숫자
+
+    param_list = []
+    for i in range(cnt):
+        selected_numbers = manual_numbers[i] if manual_numbers and i < len(manual_numbers) else None
         
-        if not manual_numbers:
-            raise ValueError("수동 모드에서는 반드시 manual_numbers를 제공해야 합니다.")
-        
-        games = []
-        for i in range(cnt):
-            if i < len(manual_numbers):
-                numbers = manual_numbers[i]
-                gen_type = "1"
-            else:
-                numbers = None
-                gen_type = "0"
-            games.append({"genType": gen_type, "arrGameChoiceNum": numbers, "alpabet": SLOTS[i]})
-        
-        return {
-            "round": self._get_round(),
-            "direct": "manual",
-            "nBuyAmount": str(1000 * cnt),
-            "param": json.dumps(games),
-            'ROUND_DRAW_DATE': requirements[1],
-            'WAMT_PAY_TLMT_END_DT': requirements[2],
-            "gameCnt": cnt
-        }
+        if selected_numbers is None:
+            # 완전 자동
+            generated_numbers = random.sample(all_numbers, 6)
+        else:
+            # 반자동 (나머지 숫자 자동 생성)
+            remaining_count = 6 - len(selected_numbers)
+            available_numbers = list(set(all_numbers) - set(selected_numbers))
+            generated_numbers = selected_numbers + random.sample(available_numbers, remaining_count)
+            
+        param_list.append({
+            "genType": "1",  # 1: 수동 선택
+            "arrGameChoiceNum": generated_numbers,
+            "alpabet": SLOTS[i]
+        })
+    
+    return {
+        "round": self._get_round(),
+        "direct": requirements[0],
+        "nBuyAmount": str(1000 * cnt),
+        "param": json.dumps(param_list),
+        "ROUND_DRAW_DATE": requirements[1],
+        "WAMT_PAY_TLMT_END_DT": requirements[2],
+        "gameCnt": cnt
+    }
 
     def _getRequirements(self, headers: dict) -> list: 
         org_headers = headers.copy()
