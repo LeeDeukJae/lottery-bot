@@ -18,7 +18,7 @@ def buy_lotto645(authCtrl: auth.AuthController, cnt: int, mode: str):
 
 def check_winning_lotto645(authCtrl: auth.AuthController) -> dict:
     lotto = lotto645.Lotto645()
-    item = lotto.check_winning(authCtrl)
+    # item = lotto.check_winning(authCtrl)
     return item
 
 # def buy_win720(authCtrl: auth.AuthController, username: str):
