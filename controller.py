@@ -9,7 +9,7 @@ import notification
 import time
 
 
-def buy_lotto645(authCtrl: auth.AuthController, cnt: int, mode: str, manual_numbers: list):
+def buy_lotto645(authCtrl: auth.AuthController, cnt: int, mode: str, manual_numbers=None):
     lotto = lotto645.Lotto645()
     _mode = lotto645.Lotto645Mode[mode.upper()]
     response = lotto.buy_lotto645(authCtrl, cnt, _mode, manual_numbers)
