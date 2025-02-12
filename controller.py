@@ -84,7 +84,8 @@ def buy():
 
     globalAuthCtrl = auth.AuthController()
     # globalAuthCtrl.login(username, password)
-
+    print("username:",username)
+    print("password:",password)
     success = globalAuthCtrl.login(username, password)    
     if not success:
         print("로그인 실패")
