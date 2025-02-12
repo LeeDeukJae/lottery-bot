@@ -83,9 +83,12 @@ def buy():
     ]
 
     globalAuthCtrl = auth.AuthController()
-    globalAuthCtrl.login(username, password)
+    # globalAuthCtrl.login(username, password)
 
     success = globalAuthCtrl.login(username, password)    
+    if not success:
+        print("로그인 실패")
+        return
     print("로그인 성공 여부 : ", success)
 
     response = buy_lotto645(globalAuthCtrl, count, mode, manual_numbers) 
