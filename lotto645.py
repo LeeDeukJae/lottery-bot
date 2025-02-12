@@ -54,6 +54,12 @@ class Lotto645:
 
 	
         body = self._try_buying(headers, data)
+	print(f"🎯 Lotto Purchase Response: {body}")
+
+	if "resultMsg" in body and body["resultMsg"] == "SUCCESS":
+   	 print("✅ 로또 구매 성공!")
+	else:
+   	 print("❌ 로또 구매 실패! Response:", body)
         self._show_result(body)
         return body
 
