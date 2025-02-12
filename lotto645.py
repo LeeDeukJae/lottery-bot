@@ -51,6 +51,7 @@ class Lotto645:
         else:
             data = self._generate_body_for_manual(cnt, requirements, manual_numbers)
 
+	print(data)
         body = self._try_buying(headers, data)
         self._show_result(body)
         return body
