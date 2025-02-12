@@ -9,9 +9,6 @@ from bs4 import BeautifulSoup as BS
 
 import auth
 from HttpClient import HttpClientSingleton
-
-class Lotto645:
-    BUY_URL = "https://ol.dhlottery.co.kr/olotto/game/execBuy.do"  # URL 추가
 	
 class Lotto645Mode(Enum):
     AUTO = 1
@@ -20,7 +17,7 @@ class Lotto645Mode(Enum):
     CHECK = 20
 
 class Lotto645:
-
+    BUY_URL = "https://ol.dhlottery.co.kr/olotto/game/execBuy.do"  # URL 추가
     _REQ_HEADERS = {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36",
         "Connection": "keep-alive",
