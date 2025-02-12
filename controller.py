@@ -20,11 +20,11 @@ def check_winning_lotto645(authCtrl: auth.AuthController) -> dict:
     item = lotto.check_winning(authCtrl)
     return item
 
-# def buy_win720(authCtrl: auth.AuthController, username: str):
-#     pension = win720.Win720()
-#     response = pension.buy_Win720(authCtrl, username)
-#     response['balance'] = pension.get_balance(auth_ctrl=authCtrl)
-#     return response
+def buy_win720(authCtrl: auth.AuthController, username: str):
+    pension = win720.Win720()
+    response = pension.buy_Win720(authCtrl, username)
+    response['balance'] = pension.get_balance(auth_ctrl=authCtrl)
+    return response
 
 def check_winning_win720(authCtrl: auth.AuthController) -> dict:
     pension = win720.Win720()
