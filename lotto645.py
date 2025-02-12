@@ -188,7 +188,8 @@ class Lotto645:
         print("🔍 Response Status Code:", res.status_code)
         print("🔍 Response Text:", res.text[:5000])  # 처음 5000자만 출력
         try:
-            return json.loads(res.text)
+	    response_text = res.content.decode('utf-8')
+            return json.loads(response_text)
         except json.JSONDecodeError:
             print("❌ JSONDecodeError: 응답이 JSON 형식이 아닙니다.")
             return {"error": "Invalid response from server", "response": res.text}
