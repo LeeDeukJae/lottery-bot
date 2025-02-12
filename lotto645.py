@@ -186,7 +186,7 @@ class Lotto645:
         res.encoding = "utf-8"
 
         print("🔍 Response Status Code:", res.status_code)
-        print("🔍 Response Text:", res.text[:500])  # 처음 500자만 출력
+        print("🔍 Response Text:", res.text[:5000])  # 처음 5000자만 출력
         try:
             return json.loads(res.text)
         except json.JSONDecodeError:
