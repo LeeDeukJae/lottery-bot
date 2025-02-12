@@ -85,6 +85,9 @@ def buy():
     globalAuthCtrl = auth.AuthController()
     globalAuthCtrl.login(username, password)
 
+    success = globalAuthCtrl.login(username, password)    
+    print("로그인 성공 여부 : ", success)
+
     response = buy_lotto645(globalAuthCtrl, count, mode, manual_numbers) 
     send_message(1, 0, response=response, webhook_url=discord_webhook_url)
 
