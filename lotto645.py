@@ -187,7 +187,11 @@ class Lotto645:
 
         print("🔍 Response Status Code:", res.status_code)
         print("🔍 Response Text:", res.text[:500])  # 처음 500자만 출력
-        return json.loads(res.text)
+        try:
+            return json.loads(res.text)
+        except json.JSONDecodeError:
+            print("❌ JSONDecodeError: 응답이 JSON 형식이 아닙니다.")
+            return {"error": "Invalid response from server", "response": res.text}
 
     # def _try_buying(self, headers, data):
 	   #  res = requests.post(self.BUY_URL, headers=headers, data=data)
