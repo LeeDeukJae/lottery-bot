@@ -172,32 +172,32 @@ class Lotto645:
         balance = soup.find("p", class_="total_new").find('strong').text
         return balance
         
-    # def _try_buying(self, headers: dict, data: dict) -> dict:
-    #     assert type(headers) == dict
-    #     assert type(data) == dict
+    def _try_buying(self, headers: dict, data: dict) -> dict:
+        assert type(headers) == dict
+        assert type(data) == dict
 
-    #     headers["Content-Type"]  = "application/x-www-form-urlencoded; charset=UTF-8"
+        headers["Content-Type"]  = "application/x-www-form-urlencoded; charset=UTF-8"
 
-    #     res = self.http_client.post(
-    #         "https://ol.dhlottery.co.kr/olotto/game/execBuy.do",
-    #         headers=headers,
-    #         data=data,
-    #     )
-    #     res.encoding = "utf-8"
-    #     return json.loads(res.text)
+        res = self.http_client.post(
+            "https://ol.dhlottery.co.kr/olotto/game/execBuy.do",
+            headers=headers,
+            data=data,
+        )
+        res.encoding = "utf-8"
+        return json.loads(res.text)
 
-    def _try_buying(self, headers, data):
-	    res = requests.post(self.BUY_URL, headers=headers, data=data)
+    # def _try_buying(self, headers, data):
+	   #  res = requests.post(self.BUY_URL, headers=headers, data=data)
 	
-	    # 응답이 JSON 형식인지 확인하기 위해 출력
-	    print("🔍 Response Status Code:", res.status_code)
-	    print("🔍 Response Text:", res.text[:500])  # 처음 500자만 출력
+	   #  # 응답이 JSON 형식인지 확인하기 위해 출력
+	   #  print("🔍 Response Status Code:", res.status_code)
+	   #  print("🔍 Response Text:", res.text[:500])  # 처음 500자만 출력
 	
-	    try:
-	        return json.loads(res.text)
-	    except json.JSONDecodeError:
-	        print("❌ JSONDecodeError: 응답이 JSON 형식이 아닙니다.")
-	        return {"error": "Invalid response from server", "response": res.text}
+	   #  try:
+	   #      return json.loads(res.text)
+	   #  except json.JSONDecodeError:
+	   #      print("❌ JSONDecodeError: 응답이 JSON 형식이 아닙니다.")
+	   #      return {"error": "Invalid response from server", "response": res.text}
 
     def check_winning(self, auth_ctrl: auth.AuthController) -> dict:
         assert type(auth_ctrl) == auth.AuthController
