@@ -198,7 +198,7 @@ class Lotto645:
 	
 	   #  # 응답이 JSON 형식인지 확인하기 위해 출력
 	   #  print("🔍 Response Status Code:", res.status_code)
-	   #  print("🔍 Response Text:", res.text[:500])  # 처음 500자만 출력
+	   #  print("🔍 Response Text:", res.text[:5000])  # 처음 5000자만 출력
 	
 	   #  try:
 	   #      return json.loads(res.text)
