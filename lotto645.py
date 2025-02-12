@@ -173,10 +173,10 @@ class Lotto645:
         return balance
         
     def _try_buying(self, headers: dict, data: dict) -> dict:
-        assert type(headers) == dict
-        assert type(data) == dict
+        assert isinstance(headers, dict)
+        assert isinstance(data, dict)
 
-        headers["Content-Type"]  = "application/x-www-form-urlencoded; charset=UTF-8"
+        headers["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8"
 
         res = self.http_client.post(
             "https://ol.dhlottery.co.kr/olotto/game/execBuy.do",
@@ -188,11 +188,12 @@ class Lotto645:
         print("🔍 Response Status Code:", res.status_code)
         print("🔍 Response Text:", res.text[:5000])  # 처음 5000자만 출력
         try:
-	    response_text = res.content.decode('utf-8')
+            response_text = res.content.decode("utf-8")  # ✅ 탭 대신 공백 4칸 적용
             return json.loads(response_text)
         except json.JSONDecodeError:
             print("❌ JSONDecodeError: 응답이 JSON 형식이 아닙니다.")
             return {"error": "Invalid response from server", "response": res.text}
+
 
     # def _try_buying(self, headers, data):
 	   #  res = requests.post(self.BUY_URL, headers=headers, data=data)
