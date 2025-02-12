@@ -10,6 +10,9 @@ from bs4 import BeautifulSoup as BS
 import auth
 from HttpClient import HttpClientSingleton
 
+class Lotto645:
+    BUY_URL = "https://ol.dhlottery.co.kr/olotto/game/execBuy.do"  # URL 추가
+	
 class Lotto645Mode(Enum):
     AUTO = 1
     MANUAL = 2
