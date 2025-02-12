@@ -184,6 +184,9 @@ class Lotto645:
             data=data,
         )
         res.encoding = "utf-8"
+
+        print("🔍 Response Status Code:", res.status_code)
+        print("🔍 Response Text:", res.text[:500])  # 처음 500자만 출력
         return json.loads(res.text)
 
     # def _try_buying(self, headers, data):
