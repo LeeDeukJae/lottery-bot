@@ -87,6 +87,7 @@ def buy():
     print("username:",username)
     print("password:",password)
     success = globalAuthCtrl.login(username, password)    
+    print(success)
     if not success:
         print("로그인 실패")
         return
