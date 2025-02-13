@@ -40,6 +40,9 @@ class AuthController:
         res = self._try_login(headers, data)
 
         print(f"📡 로그인 응답 코드: {res.status_code}")
+        print(f"📜 응답 헤더: {res.headers}")
+        print(f"🍪 응답 쿠키: {res.cookies}")
+        print(f"📝 응답 본문 (일부): {res.text[:500]}")  # 500자까지만 출력
 
         self._update_auth_cred(res)  # 로그인 응답을 넘겨줌
 
@@ -99,16 +102,24 @@ class AuthController:
     def _update_auth_cred(self, res: requests.Response) -> None:
         assert isinstance(res, requests.Response)
 
-        # 로그인 응답에서 JSESSIONID 가져오기
+        # 1️⃣ 먼저 `res.cookies`에서 찾아보기
         new_j_session_id = None
         for cookie in res.cookies:
             if cookie.name == "JSESSIONID":
                 new_j_session_id = cookie.value
                 break
 
+        # 2️⃣ Set-Cookie 헤더에서도 찾아보기
+        if not new_j_session_id and "Set-Cookie" in res.headers:
+            import re
+            match = re.search(r'JSESSIONID=([^;]+)', res.headers["Set-Cookie"])
+            if match:
+                new_j_session_id = match.group(1)
+
         if new_j_session_id:
             self._AUTH_CRED = new_j_session_id
             print(f"🔑 로그인 성공: 새로운 JSESSIONID 설정됨 → {new_j_session_id}")
         else:
             print("🚨 로그인 실패: JSESSIONID를 찾을 수 없음")
+
 
