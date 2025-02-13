@@ -42,7 +42,7 @@ class AuthController:
         print(f"📡 로그인 응답 코드: {res.status_code}")
         print(f"📜 응답 헤더: {res.headers}")
         print(f"🍪 응답 쿠키: {res.cookies}")
-        print(f"📝 응답 본문 (일부): {res.text[:500]}")  # 500자까지만 출력
+        print(f"📝 응답 본문 (전체):\n{res.text}"
 
         self._update_auth_cred(res)  # 로그인 응답을 넘겨줌
 
