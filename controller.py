@@ -1,105 +1,110 @@
-def buy_lotto645(authCtrl: auth.AuthController, cnt: int, mode: str, manual_numbers=None):
-    lotto = lotto645.Lotto645()
-    _mode = lotto645.Lotto645Mode[mode.upper()]
-    response = lotto.buy_lotto645(authCtrl, cnt, _mode, manual_numbers)
-    response['balance'] = lotto.get_balance(auth_ctrl=authCtrl)
-    return response
-def check_winning_lotto645(authCtrl: auth.AuthController) -> dict:
-    lotto = lotto645.Lotto645()
-    item = lotto.check_winning(authCtrl)
-    return item
+import os
+import sys
+from dotenv import load_dotenv
 
-def buy_win720(authCtrl: auth.AuthController, username: str):
-    pension = win720.Win720()
-    response = pension.buy_Win720(authCtrl, username)
-    response['balance'] = pension.get_balance(auth_ctrl=authCtrl)
-    return response
+import auth
+import lotto645
+import win720
+import notification
+import time
 
-def check_winning_win720(authCtrl: auth.AuthController) -> dict:
-    pension = win720.Win720()
-    item = pension.check_winning(authCtrl)
-    return item
 
-def send_message(mode: int, lottery_type: int, response: dict, webhook_url: str):
-    notify = notification.Notification()
+    def buy_lotto645(authCtrl: auth.AuthController, cnt: int, mode: str, manual_numbers=None):
+        lotto = lotto645.Lotto645()
+        _mode = lotto645.Lotto645Mode[mode.upper()]
+        response = lotto.buy_lotto645(authCtrl, cnt, _mode, manual_numbers)
+        response['balance'] = lotto.get_balance(auth_ctrl=authCtrl)
+        return response
+    def check_winning_lotto645(authCtrl: auth.AuthController) -> dict:
+        lotto = lotto645.Lotto645()
+        item = lotto.check_winning(authCtrl)
+        return item
 
-    if mode == 0:
-        if lottery_type == 0:
-            notify.send_lotto_winning_message(response, webhook_url)
-        else:
-            notify.send_win720_winning_message(response, webhook_url)
-    elif mode == 1: 
-        if lottery_type == 0:
-            notify.send_lotto_buying_message(response, webhook_url)
-        else:
-            notify.send_win720_buying_message(response, webhook_url)
+    def buy_win720(authCtrl: auth.AuthController, username: str):
+        pension = win720.Win720()
+        response = pension.buy_Win720(authCtrl, username)
+        response['balance'] = pension.get_balance(auth_ctrl=authCtrl)
+        return response
 
-def check():
-    load_dotenv()
+    def check_winning_win720(authCtrl: auth.AuthController) -> dict:
+        pension = win720.Win720()
+        item = pension.check_winning(authCtrl)
+        return item
 
-    username = os.environ.get('USERNAME')
-    password = os.environ.get('PASSWORD')
-    discord_webhook_url = os.environ.get('DISCORD_WEBHOOK_URL')
+    def send_message(mode: int, lottery_type: int, response: dict, webhook_url: str):
+        notify = notification.Notification()
 
-    globalAuthCtrl = auth.AuthController()
-    globalAuthCtrl.login(username, password)
+        if mode == 0:
+            if lottery_type == 0:
+                notify.send_lotto_winning_message(response, webhook_url)
+            else:
+                notify.send_win720_winning_message(response, webhook_url)
+         elif mode == 1: 
+            if lottery_type == 0:
+                notify.send_lotto_buying_message(response, webhook_url)
+            else:
+                notify.send_win720_buying_message(response, webhook_url)
+
+    def check():
+        load_dotenv()
+
+        username = os.environ.get('USERNAME')
+        password = os.environ.get('PASSWORD')
+        discord_webhook_url = os.environ.get('DISCORD_WEBHOOK_URL')
+
+        globalAuthCtrl = auth.AuthController()
+        globalAuthCtrl.login(username, password)
     
-    response = check_winning_lotto645(globalAuthCtrl)
-    send_message(0, 0, response=response, webhook_url=discord_webhook_url)
+        response = check_winning_lotto645(globalAuthCtrl)
+        send_message(0, 0, response=response, webhook_url=discord_webhook_url)
 
-    time.sleep(10)
+        time.sleep(10)
     
-    # response = check_winning_win720(globalAuthCtrl)
-    # send_message(0, 1, response=response, webhook_url=discord_webhook_url)
+       # response = check_winning_win720(globalAuthCtrl)
+       # send_message(0, 1, response=response, webhook_url=discord_webhook_url)
 
-def buy(): 
+    def buy(): 
     
-    load_dotenv() 
+        load_dotenv() 
 
-    username = os.environ.get('USERNAME')
-    password = os.environ.get('PASSWORD')
-    count = int(os.environ.get('COUNT'))
-    discord_webhook_url = os.environ.get('DISCORD_WEBHOOK_URL')
-    mode = "MANUAL"
+        username = os.environ.get('USERNAME')
+        password = os.environ.get('PASSWORD')
+        count = int(os.environ.get('COUNT'))
+        discord_webhook_url = os.environ.get('DISCORD_WEBHOOK_URL')
+         mode = "MANUAL"
 
-    # 직접 선택한 로또 번호 (최대 5개)
-    manual_numbers = [
-        [2, 8, 12, 29, 38, 39],  # 첫 번째 슬롯 (완전 수동)
-        [2, 8, 12, 29, 38, 39],  # 첫 번째 슬롯 (완전 수동)
-        [17, 19],                # 두 번째 슬롯 (반자동: 나머지 자동)
-        [40, 43, 44],             # 네 번째 슬롯 (반자동)
-        None                      # 다섯 번째 슬롯 (완전 자동)
-    ]
+        # 직접 선택한 로또 번호 (최대 5개)
+       manual_numbers = [
+            [2, 8, 12, 29, 38, 39],  # 첫 번째 슬롯 (완전 수동)
+            [2, 8, 12, 29, 38, 39],  # 첫 번째 슬롯 (완전 수동)
+            [17, 19],                # 두 번째 슬롯 (반자동: 나머지 자동)
+            [40, 43, 44],             # 네 번째 슬롯 (반자동)
+            None                      # 다섯 번째 슬롯 (완전 자동)
+        ]
 
-    globalAuthCtrl = auth.AuthController()
-    # globalAuthCtrl.login(username, password)
-    print("username:",username)
-    print("password:",password)
-    success = globalAuthCtrl.login(username, password)    
-    print(success)
-    if not success:
-        print("로그인 실패")
-        return
-    print("로그인 성공 여부 : ", success)
+        globalAuthCtrl = auth.AuthController()
+        success = globalAuthCtrl.login(username, password)    
+        print(success)
+        if not success:
+            print("로그인 실패")
+            return
+        print("로그인 성공 여부 : ", success)
 
-    response = buy_lotto645(globalAuthCtrl, count, mode, manual_numbers) 
-    send_message(1, 0, response=response, webhook_url=discord_webhook_url)
+        response = buy_lotto645(globalAuthCtrl, count, mode, manual_numbers) 
+        send_message(1, 0, response=response, webhook_url=discord_webhook_url)
 
-    time.sleep(10)
+        time.sleep(10)
 
-    # response = buy_win720(globalAuthCtrl, username) 
-    # send_message(1, 1, response=response, webhook_url=discord_webhook_url)
+    def run():
+        if len(sys.argv) < 2:
+            print("Usage: python controller.py [buy|check]")
+            return
 
-def run():
-    if len(sys.argv) < 2:
-        print("Usage: python controller.py [buy|check]")
-        return
-
-    if sys.argv[1] == "buy":
-        buy()
-    elif sys.argv[1] == "check":
-        check()
+        if sys.argv[1] == "buy":
+            buy()
+        elif sys.argv[1] == "check":
+            check()
   
 
-if __name__ == "__main__":
-    run()
+    if __name__ == "__main__":
+        run()
