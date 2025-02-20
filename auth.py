@@ -13,8 +13,7 @@ class AuthController:
         "Origin": "https://dhlottery.co.kr",
         "Content-Type": "application/x-www-form-urlencoded",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-        # "Referer": "https://dhlottery.co.kr/",
-        "Referer": "https://www.dhlottery.co.kr/login.do?method=login",
+        "Referer": "https://dhlottery.co.kr/",
         "Sec-Fetch-Site": "same-site",
         "Sec-Fetch-Mode": "navigate",
         "Sec-Fetch-User": "?1",
@@ -94,7 +93,7 @@ class AuthController:
         assert type(data) == dict
         
         res = self.http_client.post(
-            "https://www.dhlottery.co.kr/userSsl.do?method=login",
+            "https://www.dhlottery.co.kr/user.do?method=login&returnUrl=",
             headers=headers,
             data=data,
         )
