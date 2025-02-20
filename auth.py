@@ -31,20 +31,19 @@ class AuthController:
     def login(self, user_id: str, password: str):
         assert type(user_id) == str
         assert type(password) == str
-
+        
         default_auth_cred = (
             self._get_default_auth_cred()
         )  # JSessionId 값을 받아온 후, 그 값에 인증을 씌우는 방식
-
+        
         headers = self._generate_req_headers(default_auth_cred)
-
+        
         data = self._generate_body(user_id, password)
-
+        
         _res = self._try_login(headers, data)  # 새로운 값의 JSESSIONID가 내려오는데, 이 값으론 로그인 안됨
-
+        
         self._update_auth_cred(default_auth_cred)
-
-
+        
     def add_auth_cred_to_headers(self, headers: dict) -> str:
         assert type(headers) == dict
 
@@ -90,7 +89,7 @@ class AuthController:
     def _try_login(self, headers: dict, data: dict):
         assert type(headers) == dict
         assert type(data) == dict
-
+        
         res = self.http_client.post(
             "https://www.dhlottery.co.kr/userSsl.do?method=login",
             headers=headers,
