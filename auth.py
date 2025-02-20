@@ -4,7 +4,7 @@ from HttpClient import HttpClientSingleton
 
 class AuthController:
     _REQ_HEADERS = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
         "Connection": "keep-alive",
         "Cache-Control": "max-age=0",
         "sec-ch-ua": '" Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"',
@@ -29,20 +29,23 @@ class AuthController:
         self.http_client = HttpClientSingleton.get_instance()
 
     def login(self, user_id: str, password: str):
-        assert type(user_id) == str
-        assert type(password) == str
+        assert isinstance(user_id, str)
+        assert isinstance(password, str)
         
-        default_auth_cred = (
-            self._get_default_auth_cred()
-        )  # JSessionId 값을 받아온 후, 그 값에 인증을 씌우는 방식
+        print(f"🔍 로그인 시도: {user_id}")
         
+        default_auth_cred = self._get_default_auth_cred()
         headers = self._generate_req_headers(default_auth_cred)
-        
         data = self._generate_body(user_id, password)
         
-        _res = self._try_login(headers, data)  # 새로운 값의 JSESSIONID가 내려오는데, 이 값으론 로그인 안됨
+        res = self._try_login(headers, data)
         
-        self._update_auth_cred(default_auth_cred)
+        print(f"📡 로그인 응답 코드: {res.status_code}")
+        print(f"📜 응답 헤더: {res.headers}")
+        print(f"🍪 응답 쿠키: {res.cookies}")
+        print(f"📝 응답 본문 (전체):\n{res.text}")
+        
+        self._update_auth_cred(res)  # 로그인 응답을 넘겨줌
         
     def add_auth_cred_to_headers(self, headers: dict) -> str:
         assert type(headers) == dict
