@@ -27,24 +27,32 @@ class AuthController:
     def __init__(self):
         self.http_client = HttpClientSingleton.get_instance()
 
-    def login(self, user_id: str, password: str):
-        assert isinstance(user_id, str)
-        assert isinstance(password, str)
+    # def login(self, user_id: str, password: str):
+    #     assert isinstance(user_id, str)
+    #     assert isinstance(password, str)
 
-        print(f"🔍 로그인 시도: {user_id}")
+    #     print(f"🔍 로그인 시도: {user_id}")
 
-        default_auth_cred = self._get_default_auth_cred()
-        headers = self._generate_req_headers(default_auth_cred)
-        data = self._generate_body(user_id, password)
+    #     default_auth_cred = self._get_default_auth_cred()
+    #     headers = self._generate_req_headers(default_auth_cred)
+    #     data = self._generate_body(user_id, password)
 
-        res = self._try_login(headers, data)
+    #     res = self._try_login(headers, data)
 
-        print(f"📡 로그인 응답 코드: {res.status_code}")
-        print(f"📜 응답 헤더: {res.headers}")
-        print(f"🍪 응답 쿠키: {res.cookies}")
-        print(f"📝 응답 본문 (전체):\n{res.text}")
+    #     print(f"📡 로그인 응답 코드: {res.status_code}")
+    #     print(f"📜 응답 헤더: {res.headers}")
+    #     print(f"🍪 응답 쿠키: {res.cookies}")
+    #     print(f"📝 응답 본문 (전체):\n{res.text}")
 
-        self._update_auth_cred(res)  # 로그인 응답을 넘겨줌
+    #     self._update_auth_cred(res)  # 로그인 응답을 넘겨줌
+    
+    def login(self, user_id: str, password: str) -> bool:
+    res = self._try_login(headers, data)
+    if res.status_code == 200 and "JSESSIONID" in res.cookies:
+        self._update_auth_cred(res)
+        return True
+    return False
+
 
     def add_auth_cred_to_headers(self, headers: dict) -> str:
         assert type(headers) == dict
