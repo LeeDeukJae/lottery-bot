@@ -97,8 +97,8 @@ class AuthController:
         return res
 
     def _update_auth_cred(self, res: requests.Response) -> None:
-       assert type(j_session_id) == str
-       
+        assert type(j_session_id) == str
+        
         # TODO: judge whether login is success or not
         # 로그인 실패해도 jsession 값이 갱신되기 때문에, 마이페이지 방문 등으로 판단해야 할 듯
         # + 비번 5번 틀렸을 경우엔 비번 정확해도 로그인 실패함
