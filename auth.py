@@ -28,23 +28,20 @@ class AuthController:
         self.http_client = HttpClientSingleton.get_instance()
 
     def login(self, user_id: str, password: str):
-        assert isinstance(user_id, str)
-        assert isinstance(password, str)
-        
-        print(f"🔍 로그인 시도: {user_id}")
-        
-        default_auth_cred = self._get_default_auth_cred()
+        assert type(user_id) == str
+        assert type(password) == str
+
+        default_auth_cred = (
+            self._get_default_auth_cred()
+        )  # JSessionId 값을 받아온 후, 그 값에 인증을 씌우는 방식
+
         headers = self._generate_req_headers(default_auth_cred)
+
         data = self._generate_body(user_id, password)
-        
-        res = self._try_login(headers, data)
-        
-        print(f"📡 로그인 응답 코드: {res.status_code}")
-        print(f"📜 응답 헤더: {res.headers}")
-        print(f"🍪 응답 쿠키: {res.cookies}")
-        print(f"📝 응답 본문 (전체):\n{res.text}")
-        
-        self._update_auth_cred(res)  # 로그인 응답을 넘겨줌
+
+        _res = self._try_login(headers, data)  # 새로운 값의 JSESSIONID가 내려오는데, 이 값으론 로그인 안됨
+
+        self._update_auth_cred(default_auth_cred)
         
     def add_auth_cred_to_headers(self, headers: dict) -> str:
         assert type(headers) == dict
@@ -91,39 +88,20 @@ class AuthController:
     def _try_login(self, headers: dict, data: dict):
         assert type(headers) == dict
         assert type(data) == dict
-        
+
         res = self.http_client.post(
-            "https://www.dhlottery.co.kr/user.do?method=login&returnUrl=",
+            "https://www.dhlottery.co.kr/userSsl.do?method=login",
             headers=headers,
             data=data,
         )
         return res
 
     def _update_auth_cred(self, res: requests.Response) -> None:
-        assert isinstance(res, requests.Response)
-
-        # 1️⃣ 먼저 `res.cookies`에서 찾아보기
-        new_j_session_id = None
-        for cookie in res.cookies:
-            if cookie.name == "JSESSIONID":
-                new_j_session_id = cookie.value
-                break
-
-        # 2️⃣ Set-Cookie 헤더에서도 찾아보기
-        if not new_j_session_id and "Set-Cookie" in res.headers:
-            import re
-            match = re.search(r'JSESSIONID=([^;]+)', res.headers["Set-Cookie"])
-
-            matches = re.findall(r'JSESSIONID=([^;]+)', res.headers.get("Set-Cookie", ""))
-            if matches:
-                new_j_session_id = matches[-1]  # 가장 마지막 쿠키 사용  
-            # if match:
-            #     new_j_session_id = match.group(1)
-
-        if new_j_session_id:
-            self._AUTH_CRED = new_j_session_id
-            print(f"🔑 로그인 성공: 새로운 JSESSIONID 설정됨 → {new_j_session_id}")
-        else:
-            print("🚨 로그인 실패: JSESSIONID를 찾을 수 없음")
+       assert type(j_session_id) == str
+       
+        # TODO: judge whether login is success or not
+        # 로그인 실패해도 jsession 값이 갱신되기 때문에, 마이페이지 방문 등으로 판단해야 할 듯
+        # + 비번 5번 틀렸을 경우엔 비번 정확해도 로그인 실패함
+        self._AUTH_CRED = j_session_id
 
 
