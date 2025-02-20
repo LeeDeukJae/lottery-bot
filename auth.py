@@ -106,7 +106,8 @@ class AuthController:
         assert type(data) == dict
 
         res = self.http_client.post(
-            "https://www.dhlottery.co.kr/userSsl.do?method=login",
+            # "https://www.dhlottery.co.kr/userSsl.do?method=login",
+            "https://www.dhlottery.co.kr/user.do?method=login&returnUrl=",
             headers=headers,
             data=data,
         )
