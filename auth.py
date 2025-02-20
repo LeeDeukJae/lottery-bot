@@ -29,35 +29,20 @@ class AuthController:
         self.http_client = HttpClientSingleton.get_instance()
 
     def login(self, user_id: str, password: str):
-        assert isinstance(user_id, str)
-        assert isinstance(password, str)
+        assert type(user_id) == str
+        assert type(password) == str
 
-        print(f"🔍 로그인 시도: {user_id}")
-
-        default_auth_cred = self._get_default_auth_cred()
-        print(f"🛠 기본 인증 정보: {default_auth_cred}")  # 디버깅용
-
-        if not default_auth_cred:
-            print("🚨 JSESSIONID를 가져오지 못했습니다.")
-            return False
+        default_auth_cred = (
+            self._get_default_auth_cred()
+        )  # JSessionId 값을 받아온 후, 그 값에 인증을 씌우는 방식
 
         headers = self._generate_req_headers(default_auth_cred)
+
         data = self._generate_body(user_id, password)
 
-        res = self._try_login(headers, data)
-    
-        print(f"📡 로그인 응답 코드: {res.status_code}")
-        print(f"📜 응답 헤더: {res.headers}")
-        print(f"🍪 응답 쿠키: {res.cookies}")
-        print(f"📝 응답 본문 (일부): {res.text[:500]}")  # 너무 긴 응답을 줄이기
+        _res = self._try_login(headers, data)  # 새로운 값의 JSESSIONID가 내려오는데, 이 값으론 로그인 안됨
 
-        if res.status_code == 200 and "JSESSIONID" in res.cookies:
-            self._update_auth_cred(res)
-            print("✅ 로그인 성공!")
-            return True
-    
-        print("❌ 로그인 실패")
-        return False
+        self._update_auth_cred(default_auth_cred)
 
 
     def add_auth_cred_to_headers(self, headers: dict) -> str:
@@ -107,8 +92,7 @@ class AuthController:
         assert type(data) == dict
 
         res = self.http_client.post(
-            # "https://www.dhlottery.co.kr/userSsl.do?method=login",
-            "https://www.dhlottery.co.kr/user.do?method=login&returnUrl=",
+            "https://www.dhlottery.co.kr/userSsl.do?method=login",
             headers=headers,
             data=data,
         )
