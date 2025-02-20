@@ -113,8 +113,12 @@ class AuthController:
         if not new_j_session_id and "Set-Cookie" in res.headers:
             import re
             match = re.search(r'JSESSIONID=([^;]+)', res.headers["Set-Cookie"])
-            if match:
-                new_j_session_id = match.group(1)
+
+            matches = re.findall(r'JSESSIONID=([^;]+)', res.headers.get("Set-Cookie", ""))
+            if matches:
+                new_j_session_id = matches[-1]  # 가장 마지막 쿠키 사용  
+            # if match:
+            #     new_j_session_id = match.group(1)
 
         if new_j_session_id:
             self._AUTH_CRED = new_j_session_id
