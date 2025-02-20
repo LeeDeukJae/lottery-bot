@@ -9,12 +9,13 @@ import notification
 import time
 
 
-def buy_lotto645(authCtrl: auth.AuthController, cnt: int, mode: str, manual_numbers=None):
+def buy_lotto645(authCtrl: auth.AuthController, cnt: int, mode: str):
     lotto = lotto645.Lotto645()
     _mode = lotto645.Lotto645Mode[mode.upper()]
-    response = lotto.buy_lotto645(authCtrl, cnt, _mode, manual_numbers)
+    response = lotto.buy_lotto645(authCtrl, cnt, _mode)
     response['balance'] = lotto.get_balance(auth_ctrl=authCtrl)
     return response
+
 def check_winning_lotto645(authCtrl: auth.AuthController) -> dict:
     lotto = lotto645.Lotto645()
     item = lotto.check_winning(authCtrl)
@@ -50,6 +51,7 @@ def check():
 
     username = os.environ.get('USERNAME')
     password = os.environ.get('PASSWORD')
+    slack_webhook_url = os.environ.get('SLACK_WEBHOOK_URL') 
     discord_webhook_url = os.environ.get('DISCORD_WEBHOOK_URL')
 
     globalAuthCtrl = auth.AuthController()
@@ -60,8 +62,8 @@ def check():
 
     time.sleep(10)
     
-    # response = check_winning_win720(globalAuthCtrl)
-    # send_message(0, 1, response=response, webhook_url=discord_webhook_url)
+    response = check_winning_win720(globalAuthCtrl)
+    send_message(0, 1, response=response, webhook_url=discord_webhook_url)
 
 def buy(): 
     
@@ -70,36 +72,20 @@ def buy():
     username = os.environ.get('USERNAME')
     password = os.environ.get('PASSWORD')
     count = int(os.environ.get('COUNT'))
+    slack_webhook_url = os.environ.get('SLACK_WEBHOOK_URL') 
     discord_webhook_url = os.environ.get('DISCORD_WEBHOOK_URL')
-    mode = "MANUAL"
-
-    # 직접 선택한 로또 번호 (최대 5개)
-    manual_numbers = [
-        [2, 8, 12, 29, 38, 39],  # 첫 번째 슬롯 (완전 수동)
-        [2, 8, 12, 29, 38, 39],  # 첫 번째 슬롯 (완전 수동)
-        [17, 19],                # 두 번째 슬롯 (반자동: 나머지 자동)
-        [40, 43, 44],             # 네 번째 슬롯 (반자동)
-        None                      # 다섯 번째 슬롯 (완전 자동)
-    ]
+    mode = "AUTO"
 
     globalAuthCtrl = auth.AuthController()
-    # globalAuthCtrl.login(username, password)
-    print("username:",username)
-    print("password:",password)
-    success = globalAuthCtrl.login(username, password)    
-    print(success)
-    if not success:
-        print("로그인 실패")
-        return
-    print("로그인 성공 여부 : ", success)
+    globalAuthCtrl.login(username, password)
 
-    response = buy_lotto645(globalAuthCtrl, count, mode, manual_numbers) 
+    response = buy_lotto645(globalAuthCtrl, count, mode) 
     send_message(1, 0, response=response, webhook_url=discord_webhook_url)
 
     time.sleep(10)
 
-    # response = buy_win720(globalAuthCtrl, username) 
-    # send_message(1, 1, response=response, webhook_url=discord_webhook_url)
+    response = buy_win720(globalAuthCtrl, username) 
+    send_message(1, 1, response=response, webhook_url=discord_webhook_url)
 
 def run():
     if len(sys.argv) < 2:
