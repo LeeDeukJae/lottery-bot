@@ -47,11 +47,11 @@ class AuthController:
     #     self._update_auth_cred(res)  # 로그인 응답을 넘겨줌
     
     def login(self, user_id: str, password: str) -> bool:
-    res = self._try_login(headers, data)
-    if res.status_code == 200 and "JSESSIONID" in res.cookies:
-        self._update_auth_cred(res)
-        return True
-    return False
+        res = self._try_login(headers, data)
+        if res.status_code == 200 and "JSESSIONID" in res.cookies:
+            self._update_auth_cred(res)
+            return True
+        return False
 
 
     def add_auth_cred_to_headers(self, headers: dict) -> str:
