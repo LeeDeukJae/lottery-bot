@@ -96,7 +96,7 @@ class AuthController:
         )
         return res
 
-    def _update_auth_cred(self, res: requests.Response) -> None:
+    def _update_auth_cred(self, j_session_id: str) -> None:
         assert type(j_session_id) == str
         
         # TODO: judge whether login is success or not
