@@ -39,9 +39,14 @@ class AuthController:
 
         data = self._generate_body(user_id, password)
 
-        _res = self._try_login(headers, data)  # 새로운 값의 JSESSIONID가 내려오는데, 이 값으론 로그인 안됨
+        res = self._try_login(headers, data)  # 새로운 값의 JSESSIONID가 내려오는데, 이 값으론 로그인 안됨
 
         self._update_auth_cred(default_auth_cred)
+
+        # 로그인 성공 여부 반환
+        if res.status_code == 200:
+            return True
+        return False
         
     def add_auth_cred_to_headers(self, headers: dict) -> str:
         assert type(headers) == dict
@@ -98,7 +103,7 @@ class AuthController:
 
     def _update_auth_cred(self, j_session_id: str) -> None:
         assert type(j_session_id) == str
-        
+
         # TODO: judge whether login is success or not
         # 로그인 실패해도 jsession 값이 갱신되기 때문에, 마이페이지 방문 등으로 판단해야 할 듯
         # + 비번 5번 틀렸을 경우엔 비번 정확해도 로그인 실패함
